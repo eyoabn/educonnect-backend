@@ -114,3 +114,30 @@ exports.getProfile = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+// Change Password
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, msg: 'Both current and new password are required' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, msg: 'New password must be at least 6 characters' });
+    }
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: 'User not found' });
+    }
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, msg: 'Current password is incorrect' });
+    }
+    user.password = newPassword;
+    await user.save();
+    res.json({ success: true, msg: 'Password updated successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ success: false, msg: 'Server error' });
+  }
+};
