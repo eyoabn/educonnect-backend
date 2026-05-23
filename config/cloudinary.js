@@ -35,8 +35,13 @@ const upload = multer({
       'image/png', 'image/jpeg', 'image/jpg',
       'text/plain',
       'application/zip',
+      'application/octet-stream',
     ];
-    if (allowed.includes(file.mimetype)) {
+    
+    const ext = file.originalname ? file.originalname.split('.').pop().toLowerCase() : '';
+    const allowedExts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'txt', 'zip'];
+
+    if (allowed.includes(file.mimetype) || allowedExts.includes(ext)) {
       cb(null, true);
     } else {
       cb(new Error('File type not supported. Please upload PDF, DOC, DOCX, image, or ZIP files.'));
