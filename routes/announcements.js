@@ -29,4 +29,14 @@ router.post('/:id/comment', auth, announcementsController.addComment);
 // @access  Private
 router.put('/:id/like', auth, announcementsController.likeAnnouncement);
 
+// @route   PUT /api/announcements/:id
+// @desc    Update an announcement
+// @access  Private (Teacher/Admin)
+router.put('/:id', auth, announcementsController.updateAnnouncement);
+
+// @route   DELETE /api/announcements/:id
+// @desc    Delete an announcement
+// @access  Private (Teacher/Admin)
+router.delete('/:id', auth, announcementsController.deleteAnnouncement);
+
 module.exports = router;

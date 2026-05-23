@@ -73,3 +73,12 @@ exports.postAnswer = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.getAllQuestions = async (req, res) => {
+  try {
+    const questions = await Question.find().sort({ createdAt: -1 });
+    res.json(questions);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

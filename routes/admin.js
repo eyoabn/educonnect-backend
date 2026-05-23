@@ -12,4 +12,8 @@ router.put('/courses/:id/assign-students', auth, admin, adminController.assignSt
 router.put('/users/:id/approve', auth, admin, adminController.approveUser);
 router.delete('/users/:id', auth, admin, adminController.deleteUser);
 
+router.delete('/announcements/:id', auth, admin, adminController.deleteAnnouncement);
+router.delete('/questions/:id', auth, admin, adminController.deleteQuestion);
+router.delete('/questions/:questionId/answers/:answerId', auth, admin, adminController.deleteAnswer);
+
 module.exports = router;

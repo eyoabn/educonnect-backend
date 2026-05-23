@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Course = require('../models/Course');
+const Announcement = require('../models/Announcement');
+const Question = require('../models/Question');
 
 exports.getUsers = async (req, res) => {
   try {
@@ -118,6 +120,53 @@ exports.deleteUser = async (req, res) => {
 
     await User.findByIdAndDelete(req.params.id);
     res.json({ success: true, msg: `${user.name} has been removed successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
+
+// Admin delete announcement
+exports.deleteAnnouncement = async (req, res) => {
+  try {
+    const announcement = await Announcement.findById(req.params.id);
+    if (!announcement) {
+      return res.status(404).json({ success: false, msg: 'Announcement not found' });
+    }
+    await Announcement.findByIdAndDelete(req.params.id);
+    res.json({ success: true, msg: 'Announcement deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
+
+// Admin delete question
+exports.deleteQuestion = async (req, res) => {
+  try {
+    const question = await Question.findById(req.params.id);
+    if (!question) {
+      return res.status(404).json({ success: false, msg: 'Question not found' });
+    }
+    await Question.findByIdAndDelete(req.params.id);
+    res.json({ success: true, msg: 'Question deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
+
+// Admin delete answer
+exports.deleteAnswer = async (req, res) => {
+  try {
+    const { questionId, answerId } = req.params;
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json({ success: false, msg: 'Question not found' });
+    }
+    question.answers = question.answers.filter(ans => ans._id.toString() !== answerId);
+    await question.save();
+    res.json({ success: true, msg: 'Answer deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, msg: 'Server error', error: err.message });

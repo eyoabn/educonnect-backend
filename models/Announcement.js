@@ -16,6 +16,10 @@ const announcementSchema = new mongoose.Schema({
   },
   course: String,
   image: String,
+  category: {
+    type: String,
+    default: 'general'
+  },
   createdAt: {
     type: Date,
     default: Date.now

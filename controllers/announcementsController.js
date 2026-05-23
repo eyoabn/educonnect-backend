@@ -34,7 +34,7 @@ exports.getAnnouncementsByCourse = async (req, res) => {
 // Create announcement (teacher/admin only)
 exports.createAnnouncement = async (req, res) => {
   try {
-    const { title, content, course, image } = req.body;
+    const { title, content, course, image, category } = req.body;
 
     // Debug logging: print incoming request body
     console.log('POST /api/announcements body:', JSON.stringify(req.body));
@@ -44,7 +44,8 @@ exports.createAnnouncement = async (req, res) => {
       title,
       content,
       course,
-      image
+      image,
+      category: category || 'general'
     });
 
     await announcement.save();
@@ -115,6 +116,56 @@ exports.likeAnnouncement = async (req, res) => {
     await announcement.save();
     
     res.json(announcement);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+// Update announcement
+exports.updateAnnouncement = async (req, res) => {
+  try {
+    let announcement = await Announcement.findById(req.params.id);
+    if (!announcement) {
+      return res.status(404).json({ msg: 'Announcement not found' });
+    }
+
+    // Only author or admin can update
+    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    const { title, content, category, course } = req.body;
+    if (title) announcement.title = title;
+    if (content) announcement.content = content;
+    if (category) announcement.category = category;
+    if (course) announcement.course = course;
+
+    await announcement.save();
+    await announcement.populate('authorId', 'name email profileImage');
+
+    res.json(announcement);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+// Delete announcement
+exports.deleteAnnouncement = async (req, res) => {
+  try {
+    const announcement = await Announcement.findById(req.params.id);
+    if (!announcement) {
+      return res.status(404).json({ msg: 'Announcement not found' });
+    }
+
+    // Only author or admin can delete
+    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    await Announcement.findByIdAndDelete(req.params.id);
+    res.json({ msg: 'Announcement removed' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
