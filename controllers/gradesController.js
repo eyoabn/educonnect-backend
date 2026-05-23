@@ -219,3 +219,23 @@ exports.gradeSubmission = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+// Upload a file to Cloudinary for assignment submission
+exports.uploadFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+    // multer-storage-cloudinary puts the public URL in req.file.path
+    res.json({
+      success: true,
+      url: req.file.path,
+      originalName: req.file.originalname,
+      publicId: req.file.filename,
+    });
+  } catch (err) {
+    console.error('Upload error:', err.message);
+    res.status(500).json({ success: false, message: 'Upload failed' });
+  }
+};
+

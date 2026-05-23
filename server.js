@@ -119,6 +119,7 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/qa', require('./routes/qa'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/schedule', require('./routes/schedule'));
+app.use('/api/search', require('./routes/search'));
 
 // Health Check
 app.get('/api/health', (req, res) => {

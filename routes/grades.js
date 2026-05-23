@@ -4,7 +4,7 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/grades/:studentId
+// @route   GET /api/grades/student/:studentId
 // @desc    Get all grades for a student
 // @access  Private
 router.get('/student/:studentId', auth, gradesController.getStudentGrades);
@@ -23,6 +23,17 @@ router.post('/', auth, gradesController.createGrade);
 // @desc    Create a new assignment for all students in a course
 // @access  Private (Teacher/Admin)
 router.post('/assignment', auth, gradesController.createAssignment);
+
+// @route   POST /api/grades/upload
+// @desc    Upload a file to Cloudinary and return its URL
+// @access  Private (Student)
+router.post('/upload', auth, (req, res, next) => {
+  const { upload } = require('../config/cloudinary');
+  upload.single('file')(req, res, (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    next();
+  });
+}, gradesController.uploadFile);
 
 // @route   PUT /api/grades/submit/:id
 // @desc    Submit assignment details as a student
