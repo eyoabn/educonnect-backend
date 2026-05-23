@@ -130,8 +130,9 @@ exports.updateAnnouncement = async (req, res) => {
       return res.status(404).json({ msg: 'Announcement not found' });
     }
 
-    // Only author or admin can update
-    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin') {
+    // Only author or admin/teacher can update
+    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'teacher') {
+      console.log(`Update blocked. Author: ${announcement.authorId}, User: ${req.user.id}, Role: ${req.user.role}`);
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
@@ -159,8 +160,9 @@ exports.deleteAnnouncement = async (req, res) => {
       return res.status(404).json({ msg: 'Announcement not found' });
     }
 
-    // Only author or admin can delete
-    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin') {
+    // Only author or admin/teacher can delete
+    if (announcement.authorId.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'teacher') {
+      console.log(`Delete blocked. Author: ${announcement.authorId}, User: ${req.user.id}, Role: ${req.user.role}`);
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
