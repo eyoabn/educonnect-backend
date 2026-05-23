@@ -118,6 +118,7 @@ app.use('/api/courses', require('./routes/courses'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/qa', require('./routes/qa'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/schedule', require('./routes/schedule'));
 
 // Health Check
 app.get('/api/health', (req, res) => {
