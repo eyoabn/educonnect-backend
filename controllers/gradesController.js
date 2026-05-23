@@ -4,7 +4,45 @@ const Notification = require('../models/Notification');
 // Get all grades for a student
 exports.getStudentGrades = async (req, res) => {
   try {
-    const grades = await Grade.find({ studentId: req.params.studentId })
+    const studentId = req.params.studentId;
+    
+    // Find all courses where this student is enrolled
+    const Course = require('../models/Course');
+    const courses = await Course.find({ students: studentId });
+    
+    for (const course of courses) {
+      // Find all unique assignments created in this course (under any student)
+      const existingGradesForCourse = await Grade.find({ course: course.name });
+      
+      // Get unique assignment names
+      const uniqueAssignmentNames = [...new Set(existingGradesForCourse.map(g => g.assignmentName))];
+      
+      for (const assignmentName of uniqueAssignmentNames) {
+        // Check if this student already has a Grade document for this assignment
+        const hasGrade = await Grade.findOne({ studentId, assignmentName, course: course.name });
+        
+        if (!hasGrade) {
+          // Find one existing grade document to copy its details (points, description, attachmentUrl, due)
+          const templateGrade = await Grade.findOne({ course: course.name, assignmentName });
+          if (templateGrade) {
+            const newGrade = new Grade({
+              studentId,
+              assignmentName: templateGrade.assignmentName,
+              course: course.name,
+              maxGrade: templateGrade.maxGrade || 100,
+              description: templateGrade.description || '',
+              attachmentUrl: templateGrade.attachmentUrl || '',
+              status: 'pending',
+              feedback: '',
+              due: templateGrade.due || ''
+            });
+            await newGrade.save();
+          }
+        }
+      }
+    }
+
+    const grades = await Grade.find({ studentId })
       .populate('teacherId', 'name email')
       .sort({ createdAt: -1 });
     
@@ -92,15 +130,42 @@ exports.getCourseGrades = async (req, res) => {
   try {
     const Course = require('../models/Course');
     let courseName = req.params.course;
+    let courseObj;
     try {
-      const courseObj = await Course.findById(req.params.course) || await Course.findOne({ name: req.params.course });
-      if (courseObj) {
-        courseName = courseObj.name;
-      }
+      courseObj = await Course.findById(req.params.course) || await Course.findOne({ name: req.params.course });
     } catch (_) {
-      const courseObj = await Course.findOne({ name: req.params.course });
-      if (courseObj) {
-        courseName = courseObj.name;
+      courseObj = await Course.findOne({ name: req.params.course });
+    }
+
+    if (courseObj) {
+      courseName = courseObj.name;
+      const students = courseObj.students || [];
+      
+      // Find all unique assignments created in this course (under any student)
+      const existingGradesForCourse = await Grade.find({ course: courseName });
+      const uniqueAssignmentNames = [...new Set(existingGradesForCourse.map(g => g.assignmentName))];
+      
+      for (const studentId of students) {
+        for (const assignmentName of uniqueAssignmentNames) {
+          const hasGrade = await Grade.findOne({ studentId, assignmentName, course: courseName });
+          if (!hasGrade) {
+            const templateGrade = await Grade.findOne({ course: courseName, assignmentName });
+            if (templateGrade) {
+              const newGrade = new Grade({
+                studentId,
+                assignmentName: templateGrade.assignmentName,
+                course: courseName,
+                maxGrade: templateGrade.maxGrade || 100,
+                description: templateGrade.description || '',
+                attachmentUrl: templateGrade.attachmentUrl || '',
+                status: 'pending',
+                feedback: '',
+                due: templateGrade.due || ''
+              });
+              await newGrade.save();
+            }
+          }
+        }
       }
     }
 
