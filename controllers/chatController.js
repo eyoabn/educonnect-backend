@@ -233,18 +233,9 @@ exports.getContacts = async (req, res) => {
         const existing = contactsMap.get(otherId);
         existing.lastMessage = m.text || '';
         existing.unread = Math.max(existing.unread, unread);
-      } else {
-        contactsMap.set(otherId, {
-          id: otherId,
-          name: other.name || 'User',
-          role: other.role || 'user',
-          avatar: initials(other.name),
-          online: false,
-          unread,
-          lastMessage: m.text || '',
-          gradientIndex: gradientIndex(otherId),
-        });
       }
+      // Note: We deliberately do NOT add other users here. 
+      // This ensures we only show real assigned instructors/students.
     }
 
     res.json([...contactsMap.values()]);
