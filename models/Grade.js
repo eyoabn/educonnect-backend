@@ -20,6 +20,7 @@ const gradeSchema = new mongoose.Schema({
     default: 100
   },
   description: String,
+  attachmentUrl: String,
   submissionContent: String,
   feedback: String,
   status: {

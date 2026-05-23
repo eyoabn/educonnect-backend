@@ -118,7 +118,7 @@ exports.getCourseGrades = async (req, res) => {
 // Create a new assignment for all students in a course
 exports.createAssignment = async (req, res) => {
   try {
-    const { title, description, points, due, course } = req.body;
+    const { title, description, points, due, course, attachmentUrl } = req.body;
     const Course = require('../models/Course');
     
     // Find the course by name or ID
@@ -136,6 +136,7 @@ exports.createAssignment = async (req, res) => {
       course: CourseObj.name,
       maxGrade: points || 100,
       description: description || '',
+      attachmentUrl: attachmentUrl || '',
       status: 'pending',
       feedback: '',
       due: due || ''
