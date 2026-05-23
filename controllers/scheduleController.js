@@ -25,15 +25,15 @@ exports.getScheduleByCourse = async (req, res) => {
 
 exports.createScheduleItem = async (req, res) => {
   try {
-    const { courseName, time, day, room, type, duration } = req.body;
+    const { course, time, day, room, type, duration } = req.body;
     
-    const course = await Course.findOne({ name: courseName });
-    if (!course) {
+    const courseObj = await Course.findById(course);
+    if (!courseObj) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
     const newScheduleItem = new Schedule({
-      course: course._id,
+      course: courseObj._id,
       time,
       day,
       room,
