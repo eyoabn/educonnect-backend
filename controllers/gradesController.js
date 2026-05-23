@@ -90,7 +90,21 @@ exports.updateGrade = async (req, res) => {
 // Get all grades for a course (teacher)
 exports.getCourseGrades = async (req, res) => {
   try {
-    const grades = await Grade.find({ course: req.params.course })
+    const Course = require('../models/Course');
+    let courseName = req.params.course;
+    try {
+      const courseObj = await Course.findById(req.params.course) || await Course.findOne({ name: req.params.course });
+      if (courseObj) {
+        courseName = courseObj.name;
+      }
+    } catch (_) {
+      const courseObj = await Course.findOne({ name: req.params.course });
+      if (courseObj) {
+        courseName = courseObj.name;
+      }
+    }
+
+    const grades = await Grade.find({ course: courseName })
       .populate('studentId', 'name email')
       .sort({ createdAt: -1 });
     
@@ -123,7 +137,8 @@ exports.createAssignment = async (req, res) => {
       maxGrade: points || 100,
       description: description || '',
       status: 'pending',
-      feedback: ''
+      feedback: '',
+      due: due || ''
     }));
 
     let createdGrades = [];

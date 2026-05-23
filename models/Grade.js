@@ -29,6 +29,7 @@ const gradeSchema = new mongoose.Schema({
   },
   submittedDate: Date,
   gradedDate: Date,
+  due: String,
   teacherId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
