@@ -12,6 +12,7 @@ router.delete('/courses/:id', auth, admin, adminController.deleteCourse);
 router.put('/courses/:id/assign-teacher', auth, admin, adminController.assignTeacher);
 router.put('/courses/:id/assign-students', auth, admin, adminController.assignStudents);
 router.put('/users/:id/approve', auth, admin, adminController.approveUser);
+router.put('/users/:id/class', auth, admin, adminController.updateUserClass);
 router.delete('/users/:id', auth, admin, adminController.deleteUser);
 
 router.delete('/announcements/:id', auth, admin, adminController.deleteAnnouncement);

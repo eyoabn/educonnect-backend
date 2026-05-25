@@ -101,6 +101,21 @@ exports.assignStudents = async (req, res) => {
   }
 };
 
+exports.updateUserClass = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, msg: 'User not found' });
+    if (user.role !== 'student') return res.status(400).json({ success: false, msg: 'Only students can have a class assigned' });
+    user.targetClass = req.body.targetClass || '';
+    await user.save();
+    const u = user.toObject(); delete u.password;
+    res.json({ success: true, user: u, msg: 'Class assigned successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

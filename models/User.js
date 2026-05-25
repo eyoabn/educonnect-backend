@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  targetClass: {
+    type: String,
+    default: ''
+  },
   course: String,
   profileImage: String,
   createdAt: {

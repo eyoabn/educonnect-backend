@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 // Register
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, targetClass } = req.body;
 
     // Check if user exists
     let user = await User.findOne({ email });
@@ -18,6 +18,7 @@ exports.register = async (req, res) => {
       email,
       password,
       role: role || 'student',
+      targetClass: targetClass || '',
       approved: role === 'admin' ? true : false,
     });
 
@@ -43,6 +44,7 @@ exports.register = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        targetClass: user.targetClass,
         approved: user.approved
       },
       pending: user.approved === false
@@ -95,6 +97,7 @@ exports.login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        targetClass: user.targetClass,
         approved: user.approved
       }
     });
