@@ -29,6 +29,7 @@ async function seedDefaultCourses() {
       const defaultCourses = [
         {
           name: 'Introduction to Computer Science',
+          courseCode: 'CS101',
           students: [],
           pending: [],
           targetClasses: ['General'],
@@ -37,6 +38,7 @@ async function seedDefaultCourses() {
         },
         {
           name: 'Advanced Mathematics',
+          courseCode: 'MATH201',
           students: [],
           pending: [],
           targetClasses: ['General'],
@@ -45,6 +47,7 @@ async function seedDefaultCourses() {
         },
         {
           name: 'Physics Fundamentals',
+          courseCode: 'PHYS101',
           students: [],
           pending: [],
           targetClasses: ['General'],
@@ -53,6 +56,7 @@ async function seedDefaultCourses() {
         },
         {
           name: 'English Literature',
+          courseCode: 'ENG201',
           students: [],
           pending: [],
           targetClasses: ['General'],
@@ -61,15 +65,19 @@ async function seedDefaultCourses() {
         },
         {
           name: 'Chemistry Lab',
+          courseCode: 'CHEM101',
           students: [],
           pending: [],
+          targetClasses: ['General'],
           avgGrade: 82,
           progress: 68,
         },
         {
           name: 'History & Civilization',
+          courseCode: 'HIST101',
           students: [],
           pending: [],
+          targetClasses: ['General'],
           avgGrade: 90,
           progress: 72,
         },

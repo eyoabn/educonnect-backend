@@ -173,10 +173,9 @@ exports.deleteAnswer = async (req, res) => {
   }
 };
 
-// Admin create course
 exports.createCourse = async (req, res) => {
   try {
-    const { name, teacherId, targetClasses } = req.body;
+    const { name, courseCode, teacherId, targetClasses } = req.body;
 
     if (!name) {
       return res.status(400).json({ success: false, msg: 'Course name is required' });
@@ -193,6 +192,7 @@ exports.createCourse = async (req, res) => {
 
     const newCourse = new Course({
       name,
+      courseCode: courseCode || '',
       teacher: teacherId || null,
       students: [],
       pending: [],
