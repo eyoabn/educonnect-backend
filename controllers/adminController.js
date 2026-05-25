@@ -212,3 +212,23 @@ exports.createCourse = async (req, res) => {
     res.status(500).json({ success: false, msg: 'Server error', error: err.message });
   }
 };
+
+// Admin delete course
+exports.deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ success: false, msg: 'Course not found' });
+    }
+    
+    // Also remove course from any associated models if needed, e.g. User enrollments
+    // But since User model doesn't explicitly store courses array (Course stores users),
+    // deleting the course document is sufficient.
+    
+    await Course.findByIdAndDelete(req.params.id);
+    res.json({ success: true, msg: 'Course deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
