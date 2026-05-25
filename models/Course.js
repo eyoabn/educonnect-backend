@@ -18,6 +18,9 @@ const courseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
+  targetClasses: [{
+    type: String
+  }],
   avgGrade: {
     type: Number,
     default: 0

@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/users', auth, admin, adminController.getUsers);
 router.get('/courses', auth, admin, adminController.getCourses);
+router.post('/courses', auth, admin, adminController.createCourse);
 router.put('/courses/:id/assign-teacher', auth, admin, adminController.assignTeacher);
 router.put('/courses/:id/assign-students', auth, admin, adminController.assignStudents);
 router.put('/users/:id/approve', auth, admin, adminController.approveUser);

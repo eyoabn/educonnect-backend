@@ -172,3 +172,43 @@ exports.deleteAnswer = async (req, res) => {
     res.status(500).json({ success: false, msg: 'Server error', error: err.message });
   }
 };
+
+// Admin create course
+exports.createCourse = async (req, res) => {
+  try {
+    const { name, teacherId, targetClasses } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ success: false, msg: 'Course name is required' });
+    }
+
+    let classesArray = [];
+    if (targetClasses) {
+      if (Array.isArray(targetClasses)) {
+        classesArray = targetClasses;
+      } else if (typeof targetClasses === 'string') {
+        classesArray = targetClasses.split(',').map(c => c.trim()).filter(c => c !== '');
+      }
+    }
+
+    const newCourse = new Course({
+      name,
+      teacher: teacherId || null,
+      students: [],
+      pending: [],
+      targetClasses: classesArray,
+      avgGrade: 0,
+      progress: 0
+    });
+
+    const course = await newCourse.save();
+    if (teacherId) {
+      await course.populate('teacher', 'name email');
+    }
+
+    res.json({ success: true, course, msg: 'Course created successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error', error: err.message });
+  }
+};
